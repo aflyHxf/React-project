@@ -5,12 +5,14 @@ import thunk from 'redux-thunk'
 import {Provider} from 'react-redux'
 import {
     BrowserRouter as Router,
-    Route
+    Route,
+    Switch
 } from 'react-router-dom'
 
 import Login from './container/login/login'
 import Register from './container/register/register'
 import AuthRoute from './components/auth-route/authroute'
+import BossInfo from './container/bossinfo/bossinfo'
 import reducers from './reducer'
 import './config.js'
 import './index.css'
@@ -26,8 +28,12 @@ ReactDOM.render(
         <Router>
             <div>
                 <AuthRoute></AuthRoute>
-                <Route path='/login' component={Login}></Route>
-                <Route path='/register' component={Register}></Route>
+                <Switch>
+                    <Route path='/bossinfo' component={BossInfo}></Route>
+                    {/*<Route path='/geniusinfo'></Route>*/}
+                    <Route path='/login' component={Login}></Route>
+                    <Route path='/register' component={Register}></Route>
+                </Switch>
             </div>
         </Router>
     </Provider>),
