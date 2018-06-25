@@ -4,14 +4,45 @@ const utils = require('utility')
 const Router = express.Router()
 const model = require('./model')
 const User = model.getModel('user')
+const Chat = model.getModel('chat')
 const _filter = {'pwd': 0, '__v': 0}
+//接受参数的端口
 Router.get('/list', function (req, res) {
-    // User.remove({}, function () {
-    // })
-    User.find({}, function (err, doc) {
+    const {type} = req.query
+    User.find({type}, function (err, doc) {
         if (!err) {
-            return res.json(doc)
+            return res.json({code: 0, data: doc})
         }
+    })
+})
+Router.get('/getmsglist', function (req, res) {
+    const {userId} = req.cookies
+    User.find({}, function (err, userdoc) {
+        if (!err) {
+            let users = {}
+            userdoc.forEach(v => {
+                users[v._id] = {name: v.user, avatar: v.avatar}
+            })
+            Chat.find({'$or': [{from: userId}, {to: userId}]}, function (err, doc) {
+                if (!err) {
+                    return res.json({code: 0, msgs: doc, users})
+                }
+            })
+        }
+    })
+})
+Router.post('/update', function (req, res) {
+    const {userId} = req.cookies
+    if (!userId) {
+        return json.dumps({code: 1})
+    }
+    const body = req.body
+    User.findByIdAndUpdate(userId, body, function (err, doc) {
+        const data = Object.assign({}, {
+            user: doc.user,
+            type: doc.type
+        }, body)
+        return res.json({code: 0, data})
     })
 })
 Router.post('/login', function (req, res) {
@@ -45,12 +76,10 @@ Router.post('/register', function (req, res) {
         }
     })
 })
-
-
 Router.get('/info', function (req, res) {
+    //判断是否有用户信息
     const {userId} = req.cookies
     if (!userId) {
-        console.log('这里的code是1')
         return res.json({code: 1})
     }
     User.findOne({_id: userId}, _filter, function (err, doc) {
@@ -61,11 +90,9 @@ Router.get('/info', function (req, res) {
             return res.json({code: 0, data: doc})
         }
     })
-    //用户有没有cookie信息
 })
 
 //md5加盐
-
 function md5pwd(pwd) {
     const salt = 'asjdia_13qe89qw@#!__*(&%jdioas_'
     return utils.md5(utils.md5(pwd + salt))

@@ -9,13 +9,11 @@ import {Redirect} from 'react-router-dom'
     state => state.user,
     {update}
 )
-class BossInfo extends React.Component {
+class GeniusInfo extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             title: '',
-            company: '',
-            salary: '',
             desc: ''
         }
     }
@@ -33,20 +31,14 @@ class BossInfo extends React.Component {
             <div>
                 {redirect && redirect !== path ? <Redirect to={this.props.redirectTo}>
                 </Redirect> : null}
-                <NavBar mode="dark">完善BOSS信息</NavBar>
+                <NavBar mode="dark">完善牛人信息</NavBar>
                 <AvatarSelector selectAvatar={(imgname) => this.setState({avatar: imgname})}>
                 </AvatarSelector>
                 <InputItem onChange={(v) => this.onChange('title', v)}>
-                    招聘职位
-                </InputItem>
-                <InputItem onChange={(v) => this.onChange('company', v)}>
-                    公司名称
-                </InputItem>
-                <InputItem onChange={(v) => this.onChange('salary', v)}>
-                    职位薪资
+                    求职岗位
                 </InputItem>
                 <TextareaItem onChange={(v) => this.onChange('desc', v)}
-                              rows={3} autoHeight title='职位要求'>
+                              rows={3} autoHeight title='个人简介'>
                 </TextareaItem>
 
                 <Button type='primary'
@@ -57,4 +49,4 @@ class BossInfo extends React.Component {
     }
 }
 
-export default BossInfo
+export default GeniusInfo
